@@ -1,15 +1,12 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
+dotenv.config();
 
-
-import { Button, Frog, TextInput } from 'frog'
-import { devtools } from 'frog/dev'
-import { pinata } from 'frog/hubs'
-import {Lum0x} from "lum0x-sdk"
-import { serveStatic } from 'frog/serve-static'
-import { handle } from 'frog/vercel'
-
-
+import { Button, Frog, TextInput } from 'frog';
+import { devtools } from 'frog/dev';
+import { pinata } from 'frog/hubs';
+import { Lum0x } from 'lum0x-sdk';
+import { serveStatic } from 'frog/serve-static';
+import { handle } from 'frog/vercel';
 
 // Initialize Lum0x SDK
 Lum0x.init(process.env.NEXT_PUBLIC_LUMOX_API_KEY as string);
@@ -24,13 +21,11 @@ export const app = new Frog({
   basePath: '/api',
   // Supply a Hub to enable frame verification.
   hub: pinata(),
-  title: 'Frog Frame',
-}) 
+  title: 'Frog Frame'
+});
 
 app.frame('/', (c) => {
   const { frameData, verified } = c;
-  console.log('Frame Data:', frameData);
-  console.log('Verified:', verified);
 
   return c.res({
     image: (
@@ -39,58 +34,71 @@ app.frame('/', (c) => {
           alignItems: 'center',
           backgroundSize: '100% 100%',
           display: 'flex',
-          backgroundColor: "#331b19",
+          backgroundColor: '#331b19',
           flexDirection: 'column',
           flexWrap: 'nowrap',
           height: '100%',
           justifyContent: 'center',
           textAlign: 'center',
           width: '100%',
-          text: "#fff"
+          text: '#fff'
         }}
       >
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          gap: "10px",
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            gap: '10px'
+          }}
+        >
           {/* <h1 style={{
             color: "white",
             fontSize: 60,
           }}>Create AI Generated BIO Description</h1> */}
-          <h1 style={{
-            color: "white",
-            fontSize: 60,
-          }}>Get Farcaster Recent Cast</h1>
+          <h1
+            style={{
+              color: 'white',
+              fontSize: 60
+            }}
+          >
+            Get Farcaster Recent Cast
+          </h1>
         </div>
-        <div style={{
-          marginY: "auto",
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
-          height: 50,
-        }}>
-          <img src={`https://a1f5-105-113-18-97.ngrok-free.app/lumox-logo.png`} width={50} height={50} alt="lumox logo" />
-          <h1 style={{color: "white"}}>Powered By LUMOX</h1>
+        <div
+          style={{
+            marginY: 'auto',
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center',
+            height: 50
+          }}
+        >
+          <img
+            src={`https://a1f5-105-113-18-97.ngrok-free.app/lumox-logo.png`}
+            width={50}
+            height={50}
+            alt="lumox logo"
+          />
+          <h1 style={{ color: 'white' }}>Powered By LUMOX</h1>
         </div>
       </div>
     ),
-    action:'/profile',
+    action: '/profile',
     intents: [
-      <Button value='profile'>Get Profile</Button>,
+      <Button value="profile">Get Recent Casts</Button>
       // <TextInput placeholder='FID' />,
       // <Button action='submit' value='Submit'>Submit FID</Button>
-    ],
-  })
-})
+    ]
+  });
+});
 
 app.frame('/profile', async (c) => {
   const { frameData } = c;
-  let userData : any = {};
-  
+  let userData: any = {};
+
   // if (frameData?.inputText && frameData?.buttonIndex === 2){
   //     let res = await Lum0x.farcasterUser.getUserByFids({
   //       fids: frameData.inputText.toString()
@@ -106,19 +114,16 @@ app.frame('/profile', async (c) => {
   // userData = userRes.users[0];
 
   let userRecentCast = await Lum0x.farcasterCast.getRecentCast({
-      viewer_fid:  frameData?.fid,
-      limit: 2
+    viewer_fid: frameData?.fid,
+    limit: 2
   });
 
   // console.log("User Recent Cast", userRecentCast.result.casts);
 
   // Extract the text from each cast and store in recentCastTexts array
-  let recentCastTexts: string[] = userRecentCast.result.casts.map((cast: { text: string }) => cast.text);
-
-  console.log("Recent Cast Texts", recentCastTexts);
-
-  console.log("Lumox Logo URL:", `https://a1f5-105-113-18-97.ngrok-free.app/lumox-logo.png`);
-  console.log("Powered By LUMOX URL:", `${process.env.NEXT_PUBLIC_SITE_URL}/lumox-logo.png`);
+  let recentCastTexts: string[] = userRecentCast.result.casts.map(
+    (cast: { text: string }) => cast.text
+  );
 
   return c.res({
     image: (
@@ -127,67 +132,80 @@ app.frame('/profile', async (c) => {
           alignItems: 'center',
           backgroundSize: '100% 100%',
           display: 'flex',
-          backgroundColor: "#331b19",
+          backgroundColor: '#331b19',
           flexDirection: 'column',
           flexWrap: 'nowrap',
           height: '100%',
           justifyContent: 'center',
           textAlign: 'center',
           width: '100%',
-          text: "#fff"
+          text: '#fff'
         }}
       >
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-        }}>
-            <img 
-              src={userData?.pfp_url} 
-              width={120} 
-              height={120} 
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
+          <img
+            src={userData?.pfp_url}
+            width={120}
+            height={120}
+            style={{
+              borderRadius: '50%'
+            }}
+            alt="lumox logo"
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <h1
               style={{
-                borderRadius: "50%"
-              }} 
-              alt="lumox logo" 
-            />
-            <div style={{display: "flex", flexDirection: "column"}}>
-              <h1 style={{
-              color: "white",
-              fontSize: 40,
-            }}>{userData?.username}</h1>
-            <div style={{display: "flex", flexDirection:"column", color: "white"}}>
+                color: 'white',
+                fontSize: 40
+              }}
+            >
+              {userData?.username}
+            </h1>
+            <div style={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
               {/* <h1 style={{text: 30, }}>Farcaster Recent Cast</h1> */}
               {recentCastTexts.map((castText, index) => (
-                <p key={index} style={{color: "white", fontSize: 30}}>{castText.length > 20 ? `${castText.slice(0,20)} ...` : castText}</p>
+                <p key={index} style={{ color: 'white', fontSize: 30 }}>
+                  {castText.length > 20 ? `${castText.slice(0, 20)} ...` : castText}
+                </p>
               ))}
             </div>
           </div>
         </div>
-        <div style={{
-          marginY: "auto",
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
-          height: 50,
-        }}>
-          <img src={`${process.env.NEXT_PUBLIC_SITE_URL}/lumox-logo.png`} width={50} height={50} alt="lumox logo" />
-          <h1 style={{color: "white"}}>Powered By LUMOX</h1>
+        <div
+          style={{
+            marginY: 'auto',
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center',
+            height: 50
+          }}
+        >
+          <img
+            src={`${process.env.NEXT_PUBLIC_SITE_URL}/lumox-logo.png`}
+            width={50}
+            height={50}
+            alt="lumox logo"
+          />
+          <h1 style={{ color: 'white' }}>Powered By LUMOX</h1>
         </div>
       </div>
     ),
-    intents: [
-      <Button action='/'>Reset</Button>
-    ],
-  })
-})
+    intents: [<Button action="/">Reset</Button>]
+  });
+});
 
 // @ts-ignore
-const isEdgeFunction = typeof EdgeFunction !== 'undefined'
-const isProduction = isEdgeFunction || import.meta.env?.MODE !== 'development'
-devtools(app, isProduction ? { assetsPath: '/.frog' } : { serveStatic })
+const isEdgeFunction = typeof EdgeFunction !== 'undefined';
+const isProduction = isEdgeFunction || import.meta.env?.MODE !== 'development';
+devtools(app, isProduction ? { assetsPath: '/.frog' } : { serveStatic });
 
-export const GET = handle(app)
-export const POST = handle(app)
+export const GET = handle(app);
+export const POST = handle(app);
