@@ -7,6 +7,7 @@ import { pinata } from 'frog/hubs';
 import { Lum0x } from 'lum0x-sdk';
 import { serveStatic } from 'frog/serve-static';
 import { handle } from 'frog/vercel';
+import { postLum0xTestFrameValidation } from '../helper.js';
 
 // Initialize Lum0x SDK
 Lum0x.init(process.env.NEXT_PUBLIC_LUMOX_API_KEY as string);
@@ -24,8 +25,9 @@ export const app = new Frog({
   title: 'Frog Frame'
 });
 
-app.frame('/', (c) => {
-  // const { frameData, verified } = c;
+app.frame('/', async (c) => {
+  const { frameData } = c;
+  await postLum0xTestFrameValidation(Number(frameData?.fid), '/');
 
   return c.res({
     image: (
@@ -93,6 +95,7 @@ app.frame('/', (c) => {
 
 app.frame('/profile', async (c) => {
   const { frameData } = c;
+  await postLum0xTestFrameValidation(Number(frameData?.fid), '/profile');
   let userData: any = {};
   let recentCastTexts: string[] = [];
 
