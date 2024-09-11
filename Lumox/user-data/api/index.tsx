@@ -27,7 +27,7 @@ export const app = new Frog({
 
 app.frame('/', async (c) => {
   const { frameData } = c;
-  await postLum0xTestFrameValidation(Number(frameData?.fid), '/');
+  // await postLum0xTestFrameValidation(Number(frameData?.fid), '/');
 
   return c.res({
     image: (
@@ -95,7 +95,7 @@ app.frame('/', async (c) => {
 
 app.frame('/profile', async (c) => {
   const { frameData } = c;
-  await postLum0xTestFrameValidation(Number(frameData?.fid), '/profile');
+  // await postLum0xTestFrameValidation(Number(frameData?.fid), '/profile');
   let userData: any = {};
   let recentCastTexts: string[] = [];
 
