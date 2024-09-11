@@ -25,7 +25,7 @@ export const app = new Frog({
 });
 
 app.frame('/', (c) => {
-  const { frameData, verified } = c;
+  // const { frameData, verified } = c;
 
   return c.res({
     image: (
@@ -54,10 +54,6 @@ app.frame('/', (c) => {
             gap: '10px'
           }}
         >
-          {/* <h1 style={{
-            color: "white",
-            fontSize: 60,
-          }}>Create AI Generated BIO Description</h1> */}
           <h1
             style={{
               color: 'white',
@@ -77,7 +73,7 @@ app.frame('/', (c) => {
           }}
         >
           <img
-            src={`https://a1f5-105-113-18-97.ngrok-free.app/lumox-logo.png`}
+            src={`${process.env.NEXT_PUBLIC_SITE_URL}/lumox-logo.png`}
             width={50}
             height={50}
             alt="lumox logo"
@@ -98,32 +94,21 @@ app.frame('/', (c) => {
 app.frame('/profile', async (c) => {
   const { frameData } = c;
   let userData: any = {};
+  let recentCastTexts: string[] = [];
 
-  // if (frameData?.inputText && frameData?.buttonIndex === 2){
-  //     let res = await Lum0x.farcasterUser.getUserByFids({
-  //       fids: frameData.inputText.toString()
-  //     });
-  //   console.log("Response From Lum0x", res);
-  //   // search for the fid from the input text
-  // }
+  try {
+    // let user = await Lum0x.user
 
-  // let userRes = await Lum0x.farcasterUser.getUserByFids({
-  //   fids: frameData?.fid + ""
-  // });
-  // console.log("User Response From Lum0x", userRes.users[0]);
-  // userData = userRes.users[0];
+    let userRecentCast = await Lum0x.farcasterCast.getRecentCast({
+      viewer_fid: frameData?.fid,
+      limit: 2
+    });
 
-  let userRecentCast = await Lum0x.farcasterCast.getRecentCast({
-    viewer_fid: frameData?.fid,
-    limit: 2
-  });
-
-  // console.log("User Recent Cast", userRecentCast.result.casts);
-
-  // Extract the text from each cast and store in recentCastTexts array
-  let recentCastTexts: string[] = userRecentCast.result.casts.map(
-    (cast: { text: string }) => cast.text
-  );
+    recentCastTexts = userRecentCast.result.casts.map((cast: { text: string }) => cast.text);
+  } catch (error) {
+    console.error('Error fetching recent casts:', error);
+    recentCastTexts = ['Unable to fetch recent casts'];
+  }
 
   return c.res({
     image: (
@@ -151,15 +136,17 @@ app.frame('/profile', async (c) => {
             width: '100%'
           }}
         >
-          <img
-            src={userData?.pfp_url}
-            width={120}
-            height={120}
-            style={{
-              borderRadius: '50%'
-            }}
-            alt="lumox logo"
-          />
+          {userData?.pfp_url && (
+            <img
+              src={userData?.pfp_url}
+              width={120}
+              height={120}
+              style={{
+                borderRadius: '50%'
+              }}
+              alt="lumox logo"
+            />
+          )}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <h1
               style={{
@@ -170,7 +157,7 @@ app.frame('/profile', async (c) => {
               {userData?.username}
             </h1>
             <div style={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
-              {/* <h1 style={{text: 30, }}>Farcaster Recent Cast</h1> */}
+              <h1 style={{ text: 30 }}>Farcaster Recent Cast</h1>
               {recentCastTexts.map((castText, index) => (
                 <p key={index} style={{ color: 'white', fontSize: 30 }}>
                   {castText.length > 20 ? `${castText.slice(0, 20)} ...` : castText}
